@@ -63,7 +63,7 @@ public class ActorListAdapter extends ArrayAdapter<Actor> {
         if(actor != null){
             holder.actorImage.setImageResource(actor.getPhotoId());
             holder.actorNameLabel.setText(actor.getName());
-            holder.actorPopularityLabel.setText(Integer.toString(actor.getPopularity()));
+            holder.actorPopularityLabel.setText("popularity: " + Double.toString(actor.getPopularity()));
         }
         return convertView;
     }

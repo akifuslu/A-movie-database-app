@@ -1,11 +1,13 @@
 package com.uslu.akif.deplikeintern.models;
 
-public class Actor {
+import java.io.Serializable;
+
+public class Actor implements Serializable {
     private String name;
-    private int popularity;
+    private double popularity;
     private int photoId;
 
-    public Actor(String name, int popularity, int photoId){
+    public Actor(String name, double popularity, int photoId){
         this.name = name;
         this.popularity = popularity;
         this.photoId = photoId;
@@ -15,7 +17,7 @@ public class Actor {
         return name;
     }
 
-    public int getPopularity(){
+    public double getPopularity(){
         return popularity;
     }
 
