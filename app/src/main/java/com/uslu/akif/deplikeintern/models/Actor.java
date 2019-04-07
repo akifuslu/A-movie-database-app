@@ -5,12 +5,12 @@ import java.io.Serializable;
 public class Actor implements Serializable {
     private String name;
     private double popularity;
-    private int photoId;
+    private String photoUrl;
 
-    public Actor(String name, double popularity, int photoId){
+    public Actor(String name, double popularity, String photoUrl){
         this.name = name;
         this.popularity = popularity;
-        this.photoId = photoId;
+        this.photoUrl = photoUrl;
     }
 
     public String getName(){
@@ -21,7 +21,7 @@ public class Actor implements Serializable {
         return popularity;
     }
 
-    public int getPhotoId() {
-        return photoId;
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 }

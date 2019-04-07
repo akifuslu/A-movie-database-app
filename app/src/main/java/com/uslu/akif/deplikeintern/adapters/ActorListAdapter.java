@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
 import com.uslu.akif.deplikeintern.R;
 import com.uslu.akif.deplikeintern.models.Actor;
 import java.util.ArrayList;
@@ -61,7 +64,7 @@ public class ActorListAdapter extends ArrayAdapter<Actor> {
 
         Actor actor = actors.get(position);
         if(actor != null){
-            holder.actorImage.setImageResource(actor.getPhotoId());
+            Picasso.get().load(actor.getPhotoUrl()).into(holder.actorImage);
             holder.actorNameLabel.setText(actor.getName());
             holder.actorPopularityLabel.setText("popularity: " + Double.toString(actor.getPopularity()));
         }
