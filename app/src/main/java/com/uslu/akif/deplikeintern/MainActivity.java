@@ -8,12 +8,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.ListView;
-import com.uslu.akif.deplikeintern.adapters.ActorListAdapter;
-import com.uslu.akif.deplikeintern.models.Actor;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 import android.net.Uri;
 
 public class MainActivity extends AppCompatActivity implements ActorListFragment.OnFragmentInteractionListener,
@@ -72,6 +66,6 @@ public class MainActivity extends AppCompatActivity implements ActorListFragment
 
     @Override
     public void onFragmentInteraction(Uri uri){
-        //you can leave it empty
+        //
     }
 }

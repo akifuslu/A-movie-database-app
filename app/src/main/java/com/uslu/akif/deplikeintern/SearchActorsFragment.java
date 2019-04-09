@@ -18,8 +18,6 @@ import android.widget.TextView;
  * Activities that contain this fragment must implement the
  * {@link SearchActorsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SearchActorsFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class SearchActorsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -36,29 +34,11 @@ public class SearchActorsFragment extends Fragment {
     Button searchButton;
     TextView searchResult;
     TextInputEditText searchBar;
-    FetchActors fetchActors;
 
     public SearchActorsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchActorsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SearchActorsFragment newInstance(String param1, String param2) {
-        SearchActorsFragment fragment = new SearchActorsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +47,6 @@ public class SearchActorsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        fetchActors = new FetchActors(getContext());
     }
 
     @Override
@@ -88,17 +67,11 @@ public class SearchActorsFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
-                String[] search = searchBar.getText().toString().split(" ");
-                fetchActors.searchActors(1, search, 0, searchResult);
+                searchResult.setText(R.string.waiting);
+                String search = searchBar.getText().toString();
+                FetchActors.getInstance(getContext()).searchActors(search, searchResult);
             }
         });
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override

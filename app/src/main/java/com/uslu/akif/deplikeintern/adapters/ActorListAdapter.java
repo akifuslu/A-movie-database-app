@@ -1,5 +1,6 @@
 package com.uslu.akif.deplikeintern.adapters;
 
+import android.support.annotation.NonNull;
 import android.widget.ArrayAdapter;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -43,17 +44,18 @@ public class ActorListAdapter extends ArrayAdapter<Actor> {
         return actors.get(position).hashCode();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         if (convertView == null) {
 
             convertView = inflater.inflate(R.layout.list_view_item, null);
 
             holder = new ViewHolder();
-            holder.actorImage = (ImageView) convertView.findViewById(R.id.actor_image);
-            holder.actorNameLabel = (TextView) convertView.findViewById(R.id.actor_name_label);
-            holder.actorPopularityLabel = (TextView) convertView.findViewById(R.id.actor_popularity_label);
+            holder.actorImage = convertView.findViewById(R.id.actor_image);
+            holder.actorNameLabel = convertView.findViewById(R.id.actor_name_label);
+            holder.actorPopularityLabel = convertView.findViewById(R.id.actor_popularity_label);
             convertView.setTag(holder);
 
         }
@@ -66,7 +68,7 @@ public class ActorListAdapter extends ArrayAdapter<Actor> {
         if(actor != null){
             Picasso.get().load(actor.getPhotoUrl()).into(holder.actorImage);
             holder.actorNameLabel.setText(actor.getName());
-            holder.actorPopularityLabel.setText("popularity: " + Double.toString(actor.getPopularity()));
+            holder.actorPopularityLabel.setText(String.format(context.getResources().getString(R.string.popularity), actor.getPopularity()));
         }
         return convertView;
     }

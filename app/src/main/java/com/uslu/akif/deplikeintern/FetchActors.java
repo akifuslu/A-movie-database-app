@@ -2,43 +2,52 @@ package com.uslu.akif.deplikeintern;
 
 
 import android.content.Context;
-import android.os.Debug;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.uslu.akif.deplikeintern.adapters.ActorListAdapter;
 import com.uslu.akif.deplikeintern.models.Actor;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static java.sql.Types.NULL;
 
 public class FetchActors{
 
+    private static FetchActors instance = null;
     private static final String TAG = FetchActors.class.getSimpleName();
     private RequestQueue requestQueue;
-    private String url = "https://api.themoviedb.org/3/person/popular?api_key=9635bc7db895ff8e4f593763493bbd1e&page=";
-    private String searchUrl = "https://api.themoviedb.org/3/search/person?api_key=9635bc7db895ff8e4f593763493bbd1e&query=";
+    private String popularListUrl;
+    private String searchUrl;
+    private int currentPage;
     private Context context;
 
-    public FetchActors(Context context){
-        this.context = context;
-        requestQueue = Volley.newRequestQueue(context);
+    public static synchronized FetchActors getInstance(Context context)
+    {
+        if(instance == null)
+            instance = new FetchActors(context);
+        return instance;
     }
 
-    public void populateActors(final ArrayList<Actor> actors, final int page, final ListView listView) {
-        String pgUrl = url + page;
+    private FetchActors(Context context){
+        this.context = context;
+        requestQueue = Volley.newRequestQueue(context);
+        currentPage = 1;//start from page 1
+        popularListUrl = context.getResources().getString(R.string.popular_list_base_url) + context.getResources().getString(R.string.api_key);
+        searchUrl = context.getResources().getString(R.string.search_base_url) + context.getResources().getString(R.string.api_key);
+    }
+
+    public void populateActors(final ArrayList<Actor> actors, final ActorListAdapter actorListAdapter) {
+        String pgUrl = popularListUrl + "&page=" + currentPage;//add page to popular base url
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
             (Request.Method.GET, pgUrl, null, new Response.Listener<JSONObject>() {
                 @Override
@@ -49,14 +58,13 @@ public class FetchActors{
                             JSONObject act = arr.getJSONObject(i);
                             String name = act.getString("name");
                             double popularity = act.getDouble("popularity");
-                            String photoUrl = "http://image.tmdb.org/t/p/w185";
+                            String photoUrl = context.getResources().getString(R.string.image_base_url);
                             photoUrl += act.getString("profile_path");
                             Actor tmp = new Actor(name, popularity, photoUrl);
                             actors.add(tmp);
                         }
-                        if(page < 1001)//load all pages
-                            populateActors(actors, page+1, listView);
-                        listView.requestLayout();
+                        actorListAdapter.notifyDataSetChanged();
+                        currentPage++;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -64,45 +72,22 @@ public class FetchActors{
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e("ERROR", "Json error", error);
+                    error.printStackTrace();
                 }
             });
         requestQueue.add(jsonObjectRequest);
     }
 
-    public void searchActors(final int page, final String[] actorName, final int counter, final TextView result)
+    public void searchActors(final String actorName, final TextView resultText)
     {
-        String pgUrl = searchUrl;
-        for(int i = 0; i < actorName.length; i++)
-            pgUrl += actorName[i] + "+";
-        pgUrl += "&page=" + page;
+        String sUrl = searchUrl + "&query=" + actorName;//add query to search base url
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, pgUrl, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, sUrl, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            int tmp = 0;
-                            JSONArray arr = response.getJSONArray("results");
-                            int totalPages = response.getInt("total_pages");
-                            for (int i = 0; i < arr.length(); i++) {
-                                JSONObject act = arr.getJSONObject(i);
-                                String name = act.getString("name");
-                                String[] tokens = name.split(" ");//parse name
-                                if(tokens.length != actorName.length + 1)
-                                    continue;
-                                boolean match = true;
-                                for(int j = 0; j < actorName.length; j++)
-                                {
-                                    if(!tokens[j].equals(actorName[j]))
-                                        match = false;
-                                }
-                                if(match)
-                                    tmp++;
-                            }
-                            if(page < totalPages)//load all pages
-                                searchActors(page+1, actorName, counter + tmp, result);
-                            else
-                                result.setText(counter + tmp + " actors found!");
+                            int result = response.getInt("total_results");
+                            resultText.setText(String.format(context.getResources().getString(R.string.search_results), result));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -110,7 +95,7 @@ public class FetchActors{
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("ERROR", "Json error", error);
+                        error.printStackTrace();
                     }
                 });
         requestQueue.add(jsonObjectRequest);

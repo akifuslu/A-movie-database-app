@@ -8,13 +8,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.uslu.akif.deplikeintern.adapters.ActorListAdapter;
 import com.uslu.akif.deplikeintern.models.Actor;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -22,8 +22,6 @@ import java.util.List;
  * Activities that contain this fragment must implement the
  * {@link ActorListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ActorListFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class ActorListFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -45,24 +43,6 @@ public class ActorListFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ActorListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ActorListFragment newInstance(String param1, String param2) {
-        ActorListFragment fragment = new ActorListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,20 +62,26 @@ public class ActorListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-        listView = (ListView) getView().findViewById(R.id.actor_list_view);
+        listView = view.findViewById(R.id.actor_list_view);
         actorListAdapter = new ActorListAdapter(getActivity(),actors);
         listView.setAdapter(actorListAdapter);
-        FetchActors fetchActors = new FetchActors(getContext());
-        fetchActors.populateActors(actors, 1, listView);
+        FetchActors.getInstance(getContext()).populateActors(actors, actorListAdapter);
+        //set scroll listener on listView so we can fetch more actors as user scrolls down
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if(scrollState == SCROLL_STATE_IDLE && listView.getLastVisiblePosition() ==
+                        actors.size() - 1){
+                    FetchActors.getInstance(getContext()).populateActors(actors, actorListAdapter);
+                }
+            }
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                //empty
+            }
+        });
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {

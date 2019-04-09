@@ -3,7 +3,10 @@
     <string name="title_activity_test">TestActivity</string>
     <string name="title_home">Actor List</string>
     <string name="title_search">Search Actors</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="popularity">Popularity: %1$f</string>
+    <string name="waiting">Waiting for results..</string>
+    <string name="search_results">%1$d actors found!</string>
+    <string name="popular_list_base_url">https://api.themoviedb.org/3/person/popular?</string>
+    <string name="search_base_url">https://api.themoviedb.org/3/search/person?</string>
+    <string name="image_base_url">http://image.tmdb.org/t/p/w185</string>
 </resources>
