@@ -14,7 +14,7 @@ Android Studio 3 or newer.
 ### Installing
 
 ```
-Create an account on themoviedb.org and get a API key.
+Create an account on [Themoviedb](themoviedb.org) and get a API key.
 ```
 
 ```
@@ -34,4 +34,4 @@ Build and run!
 ## Built With
 
 * [Volley](https://github.com/google/volley) - HTTP library
-* [Picasso](https://square.github.io/picasso/) - Image loading libraryi
+* [Picasso](https://square.github.io/picasso/) - Image loading library
