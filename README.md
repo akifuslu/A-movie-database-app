@@ -13,10 +13,7 @@ Android Studio 3 or newer.
 
 ### Installing
 
-```
 Create an account on [Themoviedb](themoviedb.org) and get a API key.
-```
-
 ```
 Navigate to folder %ProjectPath%\app\src\main\res\values
 ```
