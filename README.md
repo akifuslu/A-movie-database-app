@@ -1,4 +1,4 @@
-# Deplike Intern Task
+# A Movie Database App
 An Android app implemented in Android Studio. Lists popular actors from themoviedb.org and basic search functionality which returns number of actors with given name.
  
 
